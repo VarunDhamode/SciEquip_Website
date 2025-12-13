@@ -1,0 +1,102 @@
+Scientific Products and Their Parameters
+Magnetic Stirrer
+- RPM Range
+- Volume Capacity (mL / L)
+- Plate Material (Ceramic / Stainless Steel)
+- With/Without Heating
+- Temperature Range (if heating)
+- Stirring Position (Single / Multi)
+- Optional Notes
+Hot Plate
+- Temperature Range
+- Plate Material
+- Plate Size
+- Heating Power (W)
+- Safety Features
+- Optional Notes
+Hot Plate Magnetic Stirrer
+- RPM Range
+- Temperature Range
+- Volume Capacity
+- Plate Size
+- Plate Material
+- Optional Notes
+Laboratory Centrifuge
+- Max Speed (RPM / RCF)
+- Rotor Type (Fixed / Swing)
+- Tube Capacity (mL)
+- Number of Slots
+- Temperature Control (Yes/No)
+- Optional Notes
+
+PCR Machine (Thermal Cycler)
+- Sample Capacity
+- Temperature Range
+- Ramp Rate (°C/sec)
+- Touchscreen (Yes/No)
+- Gradient Function (Yes/No)
+- Optional Notes
+Micro Pipette
+- Volume Range
+- Type (Single Channel / Multi Channel)
+- Accuracy
+- Autoclavable (Yes/No)
+- Optional Notes
+Autoclave
+- Chamber Volume (L)
+- Temperature Range
+- Pressure Rating
+- Type (Vertical / Horizontal)
+- Material
+- Optional Notes
+Incubator
+- Temperature Range
+- Chamber Volume
+- CO■ Control (if applicable)
+- Shelves Required
+- Optional Notes
+Water Bath
+- Temperature Range
+- Chamber Capacity
+- Number of Holes / Compartments
+- Circulating or Non-circulating
+- Optional Notes
+
+Spectrophotometer
+- Wavelength Range
+- Light Source
+- Accuracy
+- Sample Holder Type (Cuvette / Microplate)
+- Optional Notes
+pH Meter
+- pH Range
+- Accuracy
+- Temperature Compensation
+- Electrode Type
+- Optional Notes
+Microscopes
+- Type (Compound / Stereo / Digital)
+- Magnification Range
+- Camera Required (Yes/No)
+- Light Source (LED/Halogen)
+- Optional Notes
+Weighing Balance
+- Capacity
+- Readability
+- Pan Size
+- Calibration Type (Auto/Manual)
+- Optional Notes
+Vacuum Pump
+- Pump Type (Oil / Oil-free)
+- Flow Rate
+- Max Vacuum Level
+- Noise Level
+- Optional Notes
+Fume Hood
+
+- Size
+- Airflow Type (Ducted / Ductless)
+- Material
+- Safety Features
+- Optional Notes
+

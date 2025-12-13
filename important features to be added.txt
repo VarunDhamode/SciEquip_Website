@@ -1,0 +1,2 @@
+1. I need to add subscription for customer and vendrors 
+2. I want to add extra fees if they want to see the others vendors bid to win a customer
