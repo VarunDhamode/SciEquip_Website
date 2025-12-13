@@ -47,28 +47,26 @@ if (dbUser && dbPassword) {
     };
 }
 
-// Connect to SQL
-sql.connect(sqlConfig).then(() => {
-    console.log('Connected to Azure SQL Database');
-}).catch(err => {
-    console.error('Database Connection Failed! Details:', err);
-    if (err.code === 'ETIMEOUT' || err.name === 'ConnectionError') {
-        console.error('\n\x1b[31m%s\x1b[0m', 'CRITICAL ERROR: Could not connect to Azure SQL Database.');
-        console.error('\x1b[33m%s\x1b[0m', 'POSSIBLE CAUSE: Your IP address is likely blocked by the Azure SQL Firewall.');
-        console.error('ACTION REQUIRED:');
-        console.error('1. Go to the Azure Portal (https://portal.azure.com)');
-        console.error('2. Navigate to your SQL Server resource');
-        console.error('3. Go to Security > Networking');
-        console.error('4. Click "Add your client IPv4 address" and Save.');
-        console.error('5. Restart this server.\n');
+// Create connection pool (Vercel Serverless compatible)
+let pool;
+
+async function getConnection() {
+    if (!pool) {
+        pool = new sql.ConnectionPool(sqlConfig);
+        await pool.connect();
+        console.log('Connected to Azure SQL Database');
     }
-});
+    return pool;
+}
 
 // --- AUTH ROUTES ---
 
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
     try {
+        // Ensure connection is available
+        await getConnection();
+
         // Check all tables
         const tables = ['Customers', 'Vendors', 'Admins'];
         let user = null;
@@ -77,7 +75,7 @@ app.post('/api/login', async (req, res) => {
         console.log('Login attempt for:', email);
 
         for (const table of tables) {
-            const request = new sql.Request();
+            const request = pool.request();
             request.input('email', sql.NVarChar, email);
             request.input('password', sql.NVarChar, password);
 
@@ -116,7 +114,7 @@ app.post('/api/register', async (req, res) => {
     else return res.status(400).json({ error: 'Invalid role' });
 
     try {
-        const request = new sql.Request();
+        await getConnection(); const request = pool.request();
         request.input('name', sql.NVarChar, name);
         request.input('email', sql.NVarChar, email);
         request.input('password', sql.NVarChar, password);
@@ -141,7 +139,7 @@ app.get('/api/rfqs', async (req, res) => {
             JOIN Customers c ON r.customer_id = c.id
         `;
 
-        const request = new sql.Request();
+        await getConnection(); const request = pool.request();
 
         if (role === 'customer' && userId) {
             query += ` WHERE r.customer_id = @userId`;
@@ -163,7 +161,7 @@ app.get('/api/rfqs', async (req, res) => {
 app.post('/api/rfqs', async (req, res) => {
     const { title, category, description, budget, customerId } = req.body; // Added customerId
     try {
-        const request = new sql.Request();
+        await getConnection(); const request = pool.request();
         request.input('title', sql.NVarChar, title);
         request.input('category', sql.NVarChar, category);
         request.input('description', sql.NVarChar, description);
@@ -198,7 +196,7 @@ app.get('/api/bids', async (req, res) => {
             SELECT * FROM RankedBids WHERE rn = 1
         `;
 
-        const request = new sql.Request();
+        await getConnection(); const request = pool.request();
 
         if (role === 'customer' && userId) {
             // Customers see bids for THEIR RFQs
@@ -246,7 +244,7 @@ app.get('/api/bids', async (req, res) => {
 app.post('/api/bids', async (req, res) => {
     const { rfqId, vendorName, vendorEmail, price, proposal } = req.body;
     try {
-        const request = new sql.Request();
+        await getConnection(); const request = pool.request();
         request.input('rfqId', sql.Int, rfqId);
         request.input('vendorName', sql.NVarChar, vendorName);
         request.input('vendorEmail', sql.NVarChar, vendorEmail);
@@ -256,7 +254,7 @@ app.post('/api/bids', async (req, res) => {
         await request.query('INSERT INTO Bids (rfq_id, vendor_name, vendor_email, price, proposal) VALUES (@rfqId, @vendorName, @vendorEmail, @price, @proposal)');
 
         // Update bid count
-        await new sql.Request().input('id', sql.Int, rfqId).query('UPDATE RFQs SET vendor_bids = vendor_bids + 1 WHERE id = @id');
+        await pool.request().input('id', sql.Int, rfqId).query('UPDATE RFQs SET vendor_bids = vendor_bids + 1 WHERE id = @id');
 
         res.json({ message: 'Bid Submitted' });
     } catch (err) {
@@ -283,7 +281,7 @@ app.get('/api/users', async (req, res) => {
 app.get('/api/conversations/:userId/:userType', async (req, res) => {
     const { userId, userType } = req.params;
     try {
-        const request = new sql.Request();
+        await getConnection(); const request = pool.request();
         request.input('userId', sql.Int, userId);
 
         let query;
@@ -329,7 +327,7 @@ app.get('/api/conversations/:userId/:userType', async (req, res) => {
 app.get('/api/messages/:conversationId', async (req, res) => {
     const { conversationId } = req.params;
     try {
-        const request = new sql.Request();
+        await getConnection(); const request = pool.request();
         request.input('conversationId', sql.Int, conversationId);
 
         const result = await request.query(`
@@ -362,7 +360,7 @@ app.post('/api/messages', async (req, res) => {
 
         // Create conversation if it doesn't exist
         if (!convId && rfqId && customerId && vendorId) {
-            const checkConv = new sql.Request();
+            const checkConv = pool.request();
             checkConv.input('rfqId', sql.Int, rfqId);
             checkConv.input('customerId', sql.Int, customerId);
             checkConv.input('vendorId', sql.Int, vendorId);
@@ -375,7 +373,7 @@ app.post('/api/messages', async (req, res) => {
             if (existing.recordset.length > 0) {
                 convId = existing.recordset[0].id;
             } else {
-                const createConv = new sql.Request();
+                const createConv = pool.request();
                 createConv.input('rfqId', sql.Int, rfqId);
                 createConv.input('customerId', sql.Int, customerId);
                 createConv.input('vendorId', sql.Int, vendorId);
@@ -391,7 +389,7 @@ app.post('/api/messages', async (req, res) => {
         }
 
         // Insert message
-        const request = new sql.Request();
+        await getConnection(); const request = pool.request();
         request.input('conversationId', sql.Int, convId);
         request.input('senderId', sql.Int, senderId);
         request.input('senderType', sql.NVarChar, senderType);
@@ -404,7 +402,7 @@ app.post('/api/messages', async (req, res) => {
         `);
 
         // Update conversation last_message_at and unread count
-        const updateConv = new sql.Request();
+        const updateConv = pool.request();
         updateConv.input('convId', sql.Int, convId);
         updateConv.input('senderType', sql.NVarChar, senderType);
 
@@ -433,7 +431,7 @@ app.post('/api/messages', async (req, res) => {
 app.put('/api/messages/:messageId/read', async (req, res) => {
     const { messageId } = req.params;
     try {
-        const request = new sql.Request();
+        await getConnection(); const request = pool.request();
         request.input('messageId', sql.Int, messageId);
 
         await request.query(`
@@ -455,7 +453,7 @@ app.put('/api/conversations/:conversationId/read', async (req, res) => {
     const { userType } = req.body;
 
     try {
-        const request = new sql.Request();
+        await getConnection(); const request = pool.request();
         request.input('conversationId', sql.Int, conversationId);
         request.input('receiverType', sql.NVarChar, userType);
 
@@ -470,7 +468,7 @@ app.put('/api/conversations/:conversationId/read', async (req, res) => {
 
         // Reset unread count
         const unreadField = userType === 'customer' ? 'customer_unread_count' : 'vendor_unread_count';
-        const updateConv = new sql.Request();
+        const updateConv = pool.request();
         updateConv.input('convId', sql.Int, conversationId);
 
         await updateConv.query(`
@@ -490,7 +488,7 @@ app.put('/api/conversations/:conversationId/read', async (req, res) => {
 app.get('/api/online-status/:userId/:userType', async (req, res) => {
     const { userId, userType } = req.params;
     try {
-        const request = new sql.Request();
+        await getConnection(); const request = pool.request();
         request.input('userId', sql.Int, userId);
         request.input('userType', sql.NVarChar, userType);
 

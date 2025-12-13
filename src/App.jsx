@@ -35,6 +35,14 @@ function AppContent() {
         return () => window.removeEventListener('hashchange', handleHashChange);
     }, []);
 
+    // Auto-redirect to dashboard after login
+    React.useEffect(() => {
+        if (isAuthenticated && (currentView === 'login' || currentView === 'register')) {
+            // Reset to default dashboard view after successful login
+            setCurrentView('dashboard');
+        }
+    }, [isAuthenticated, currentView]);
+
     if (loading) {
         return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
     }

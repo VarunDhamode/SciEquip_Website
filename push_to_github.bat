@@ -23,9 +23,9 @@ if %errorlevel% neq 0 (
 )
 
 echo.
-echo Pushing to main branch...
+echo Pushing to main branch (Force Push)...
 git branch -M main
-git push -u origin main
+git push -u origin main --force
 
 echo.
 echo ===============================================
