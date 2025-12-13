@@ -1,8 +1,9 @@
 // API Client for SciEquip Backend
 // Connects to the Node.js server running at http://localhost:3000
 
-// Use environment variable for API URL in production, fallback to localhost for dev
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+// Use environment variable for API URL in production, or default to relative path '/api' which works if backend is on same domain
+// Fallback to localhost only if strictly needed, but relative is safer for Vercel monorepo
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
 
 export const loginUser = async (email, password) => {
     const response = await fetch(`${API_BASE}/login`, {
