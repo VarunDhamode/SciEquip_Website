@@ -16,8 +16,8 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
-    const login = async (email, password) => {
-        const userData = await loginUser(email, password);
+    const login = async (email, password, requestedRole = null) => {
+        const userData = await loginUser(email, password, requestedRole);
         setUser(userData);
         localStorage.setItem('sciequip_session', JSON.stringify(userData));
         return userData;

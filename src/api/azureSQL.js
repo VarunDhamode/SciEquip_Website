@@ -5,11 +5,16 @@
 // Fallback to localhost only if strictly needed, but relative is safer for Vercel monorepo
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
 
-export const loginUser = async (email, password) => {
+export const loginUser = async (email, password, requestedRole = null) => {
+    const body = { email, password };
+    if (requestedRole) {
+        body.requestedRole = requestedRole;
+    }
+
     const response = await fetch(`${API_BASE}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify(body)
     });
     if (!response.ok) throw new Error('Invalid credentials');
     return response.json();

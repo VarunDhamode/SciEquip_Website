@@ -14,7 +14,7 @@ export default function AdminLogin() {
         setError('');
         setLoading(true);
         try {
-            const user = await login(email, password);
+            const user = await login(email, password, 'admin');
             if (user.role !== 'admin') {
                 throw new Error('Unauthorized access. Admin only.');
             }

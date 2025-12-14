@@ -15,7 +15,7 @@ export default function Login({ onRegisterClick }) {
         setError('');
         setLoading(true);
         try {
-            const user = await login(email, password);
+            const user = await login(email, password, loginRole);
             if (user.role === 'admin') {
                 throw new Error('Please use the Admin Portal to log in.');
             }
@@ -128,8 +128,8 @@ export default function Login({ onRegisterClick }) {
                             type="button"
                             onClick={() => setLoginRole('customer')}
                             className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all ${loginRole === 'customer'
-                                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
-                                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
+                                : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                                 }`}
                         >
                             Customer
@@ -138,8 +138,8 @@ export default function Login({ onRegisterClick }) {
                             type="button"
                             onClick={() => setLoginRole('vendor')}
                             className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all ${loginRole === 'vendor'
-                                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
-                                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
+                                : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                                 }`}
                         >
                             Vendor
