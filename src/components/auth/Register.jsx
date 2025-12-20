@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 
 // --- Internal Icons ---
 const Icon = ({ size = 24, className, ...props }) => (
@@ -12,15 +13,6 @@ const Briefcase = (props) => <Icon {...props}><rect x="2" y="7" width="20" heigh
 const Beaker = (props) => <Icon {...props}><path d="M4.5 3h15" /><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3" /><line x1="6" y1="14" x2="18" y2="14" /></Icon>;
 const AlertCircle = (props) => <Icon {...props}><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></Icon>;
 const ChevronDown = (props) => <Icon {...props}><polyline points="6 9 12 15 18 9" /></Icon>;
-
-// --- MOCK HOOK (DELETE THIS IN REAL APP) ---
-const useAuth = () => ({
-    register: async (data) => {
-        await new Promise(r => setTimeout(r, 1000));
-        console.log('Registering:', data);
-        return { ...data, id: '123' };
-    }
-});
 
 export default function Register({ onLoginClick, onBack }) {
     const [formData, setFormData] = useState({
@@ -36,7 +28,7 @@ export default function Register({ onLoginClick, onBack }) {
     // Fallback for back navigation
     const handleBack = () => {
         if (onBack) onBack();
-        else window.history.back(); 
+        else window.history.back();
     };
 
     const handleChange = (e) => {
@@ -66,7 +58,7 @@ export default function Register({ onLoginClick, onBack }) {
 
             {/* Back Button */}
             <div className="absolute top-6 left-6 md:top-8 md:left-8 z-20">
-                <button 
+                <button
                     onClick={handleBack}
                     className="flex items-center gap-2 text-slate-500 hover:text-blue-600 font-medium transition-colors bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full hover:bg-white border border-transparent hover:border-slate-100 shadow-sm"
                 >
@@ -77,7 +69,7 @@ export default function Register({ onLoginClick, onBack }) {
 
             {/* Register Card */}
             <div className="bg-white w-full max-w-md rounded-2xl shadow-xl border border-slate-100 overflow-hidden relative z-10 p-8 md:p-10 animate-fade-in-up">
-                
+
                 {/* Logo Area */}
                 <div className="text-center mb-8">
                     <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-blue-600 text-white mb-5 shadow-lg shadow-blue-500/30">
