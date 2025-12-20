@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import { useAuth } from '../../hooks/useAuth'; // UNCOMMENT THIS IN YOUR REAL APP
+import { useAuth } from '../../hooks/useAuth';
 
 // --- Internal Icons ---
 const Icon = ({ size = 24, className, ...props }) => (
@@ -10,15 +10,6 @@ const Mail = (props) => <Icon {...props}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.
 const Lock = (props) => <Icon {...props}><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></Icon>;
 const Beaker = (props) => <Icon {...props}><path d="M4.5 3h15" /><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3" /><line x1="6" y1="14" x2="18" y2="14" /></Icon>;
 const AlertCircle = (props) => <Icon {...props}><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></Icon>;
-
-// --- MOCK HOOK (DELETE THIS IN REAL APP) ---
-const useAuth = () => ({
-    login: async (email, password, role) => {
-        await new Promise(r => setTimeout(r, 1000));
-        console.log('Login:', { email, role });
-        return { role: role };
-    }
-});
 
 export default function Login({ onRegisterClick, onBack }) {
     const [email, setEmail] = useState('');
