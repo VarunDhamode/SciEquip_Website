@@ -63,8 +63,8 @@ function AppContent() {
         if (currentView === 'landing') return <LandingPage onNavigate={handleNavigate} />;
         if (currentView === 'browse-rfqs') return <PublicRFQBrowser onNavigate={handleNavigate} onLoginRequired={handleLoginRequired} />;
         if (currentView === 'browse-vendors') return <PublicVendorBrowser onNavigate={handleNavigate} onLoginRequired={handleLoginRequired} />;
-        if (currentView === 'login') return <Login onRegisterClick={() => setCurrentView('register')} />;
-        if (currentView === 'register') return <Register onLoginClick={() => setCurrentView('login')} />;
+        if (currentView === 'login') return <Login onRegisterClick={() => setCurrentView('register')} onBack={() => setCurrentView('landing')} />;
+        if (currentView === 'register') return <Register onLoginClick={() => setCurrentView('login')} onBack={() => setCurrentView('landing')} />;
         if (currentView === 'admin-portal') return <AdminLogin />;
     }
 
